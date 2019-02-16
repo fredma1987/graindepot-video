@@ -1,0 +1,1 @@
+package com.zhoubi.graindepot.mapper;import com.zhoubi.graindepot.base.BaseMapper;import com.zhoubi.graindepot.bean.Video;import java.util.List;public interface VideoMapper extends BaseMapper<Video> {    Video selectRegiterVideo(int graindepotid);    List<Video> selectWeightVideoList(int graindepotid);}

@@ -1,0 +1,7 @@
+spring:
+    application:
+        name: graindepot-video
+
+server:
+    port: 8006 #
+    #context-path: /graindepot-video

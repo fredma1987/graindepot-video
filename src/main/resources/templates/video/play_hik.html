@@ -1,0 +1,425 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="head::head(${title})">
+</head>
+<style type="text/css">
+    body {
+        margin: 0px;
+        padding: 0px;
+        overflow: hidden;
+        color: #222248;
+        font-size: 12px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    td {
+        color: #222248;
+        font-size: 12px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    ul {
+        margin-left: 5px;
+        padding: 0px;
+        white-space: nowrap;
+    }
+
+    li {
+        display: inline-block;
+        list-style-type: none;
+        vertical-align: middle;
+        height: 30px;
+    }
+
+    #TopMenu {
+        width: 100%;
+        height: 50px;
+        padding: 0;
+    }
+
+    #BodyLeft {
+        width: 300px;
+        height: 100%;
+        float: left;
+        border-right: 0px solid #CCC;
+        padding: 10px;
+    }
+
+    #OCXBody {
+        width: 550px;
+        height: 485px;
+        margin: 10px 0px 10px 10px;
+        float: left;
+    }
+
+    .normalinput {
+        width: 100px;
+        vertical-align: middle;
+        margin-right: 10px;
+    }
+
+    .distanceleft {
+        padding-left: 10px;
+    }
+
+    .normalbtn {
+        background-color: #3FF;
+        border:0px solid #0CF;
+        vertical-align:middle;
+        height:18px;
+        padding-top:2px;
+    }
+
+</style>
+<body>
+    <script th:inline="javascript">
+        var videoid = [[${videoid}]];
+    </script>
+    <script th:src="@{/graindepot-video/js/webVideoCtrl.js}"></script>
+    <script th:src="@{/graindepot-video/js/hik3.js}"></script>
+    <script th:inline="javascript">
+        var ip = [[${item.ip}]],
+                httpport = [[${item.httpport}]],
+                username = [[${item.username}]],
+                password = [[${item.password}]],
+                channel = [[${item.channel}]],
+                maliu=[[${item.maliu}]],
+                datasignal = [[${item.datasignal}]];
+        var bZeroChannel=false;//默认不用模拟信号
+        var iStreamType = 1; //码流类型，1 主码流， 2 子码流
+        // 初始化插件
+        // 全局保存当前选中窗口
+        var g_iWndIndex = 0; //可以不用设置这个变量，有窗口参数的接口中，不用传值，开发包会默认使用当前选择窗口
+        $(function() {
+            // 检查插件是否已经安装过
+            console.info(WebVideoCtrl);
+            if (-1 == WebVideoCtrl.I_CheckPluginInstall()) {
+                alert("您还未安装过插件，点击下载视频播放控件!");
+                return;
+            }
+
+            // 初始化插件参数及插入插件
+            WebVideoCtrl.I_InitPlugin(550, 500, {
+                iWndowType : 1,
+                cbSelWnd : function(xmlDoc) {
+                    g_iWndIndex = $(xmlDoc).find("SelectWnd").eq(0).text();
+                    //var szInfo = "当前选择的窗口编号：" + g_iWndIndex;
+                    //showCBInfo(szInfo);
+                }
+            });
+            WebVideoCtrl.I_InsertOBJECTPlugin("divPlugin");
+            changeWndNum(1);
+            if(""!=maliu){
+                iStreamType=maliu
+            }
+            if(datasignal==2){//模拟
+                bZeroChannel=true;
+            }
+            clickLogin(ip,httpport,channel,bZeroChannel,username,password,iStreamType);
+            clickStartRealPlay(ip,channel,bZeroChannel,iStreamType,g_iWndIndex);
+        });
+        function rePlay(){
+            clickStartRealPlay(ip,channel,bZeroChannel,iStreamType,g_iWndIndex);
+        }
+    </script>
+<!--<div style="display: none">
+    <div id="TopMenu">
+        <table width="100%" cellspacing="1" cellpadding="0" border="0"
+               bgcolor="#96C3E4">
+            <tr height="22">
+                <td bgcolor="#ebebeb" class="distanceleft">
+                    登录信息
+                </td>
+            </tr>
+            <tr bgcolor="#f5f5f5" height="30">
+                <td class="distanceleft">
+                    IP:
+                    <input type="text" id="DeviceIP"
+                           class="normalinput" th:value="${item.ip}">
+                    maliu:
+                    <input type="text" id="maliu" th:value="${item.maliu}"
+                           class="normalinput">
+                    port:
+                    <input type="text" id="DevicePort" th:value="${item.httpport}"
+                           class="normalinput">
+                    user:
+                    <input type="text" id="DeviceUsername"
+                           th:value="${item.username}" class="normalinput">
+                    pwd:
+                    <input type="text" id="DevicePasswd" th:value="${item.password}"
+                           class="normalinput">
+                    <select name="ChannelList" id="ChannelList">
+                        <option th:value="${item.channel}"></option>
+                    </select>
+                    <button class="normalbtn" onClick="clickLogin()">
+                        注册
+                    </button>
+                    <button class="normalbtn" onClick="clickLogout()"
+                            style="margin-left: 20px;">
+                        注销
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="BodyLeft">
+        <ul>
+            <li>
+                通道列表：
+                &lt;!&ndash;<select name="ChannelList" id="ChannelList" class="longinput">
+
+                    <option value="${hzVideo.td}">
+                        Camera 02
+                    </option>
+                </select>&ndash;&gt;
+                <select id="channels" class="sel"></select>
+                <button class="normalbtn" onClick="clickGetAudioInfo();">
+                    获取
+                </button>
+            </li>
+            <li>
+                <button class="normalbtn" onClick="clickStartRealPlay();"
+                        style="margin-left: 60px;">
+                    &Delta;开始预览
+                </button>
+                <button class="normalbtn" onClick="clickStopRealPlay();"
+                        style="margin-left: 13px;">
+                    &nabla;停止预览
+                </button>
+            </li>
+            <li>
+                <button class="normalbtn" onClick="clickCapturePic();"
+                        style="margin-left: 60px;">
+                    抓图
+                </button>
+            </li>
+            <li>
+                <button class="normalbtn" onClick="clickStartRecord();"
+                        style="margin-left: 60px;">
+                    开始录像
+                </button>
+                <button class="normalbtn" onClick="clickStopRecord();"
+                        style="margin-left: 43px;">
+                    停止录像
+                </button>
+            </li>
+            <li>
+                <button class="normalbtn" onClick="clickStartVoiceTalk();"
+                        style="margin-left: 60px;">
+                    开始对讲
+                </button>
+                <button class="normalbtn" onClick="clickStopVoiceTalk();"
+                        style="margin-left: 43px;">
+                    停止对讲
+                </button>
+            </li>
+            <li>
+                <button class="normalbtn" onClick="clickOpenSound();"
+                        style="margin-left: 60px;">
+                    打开声音
+                </button>
+                <button class="normalbtn" onClick="clickCloseSound();"
+                        style="margin-left: 43px;">
+                    关闭声音
+                </button>
+            </li>
+            <li>
+                云台控制
+            </li>
+            <li>
+                <table width="275" height="90" border="0" cellspacing="0"
+                       cellpadding="0">
+                    <tr>
+                        <td>
+                            <table width="120" height="90" border="0" cellspacing="0"
+                                   cellpadding="0">
+                                <tr align="center">
+                                    <td>
+                                        <button class="normalbtn"
+                                                onClick="mouseDownPTZControl(5);" style="width: 30px;">
+                                            左上
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="normalbtn" onClick="mouseDownPTZControl(1);"
+                                                style="width: 30px;">
+                                            上
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="normalbtn"
+                                                onClick="mouseDownPTZControl(7);" style="width: 30px;">
+                                            右上
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr align="center">
+                                    <td>
+                                        <button class="normalbtn" onClick="mouseDownPTZControl(3);"
+                                                style="width: 30px;">
+                                            左
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="normalbtn" onClick="mouseDownPTZControl(9);"
+                                                style="width: 30px;">
+                                            自转
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="normalbtn" onClick="mouseDownPTZControl(4);"
+                                                style="width: 30px;">
+                                            右
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr align="center">
+                                    <td>
+                                        <button class="normalbtn"
+                                                onClick="mouseDownPTZControl(6);" style="width: 30px;">
+                                            左下
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="normalbtn" onClick="mouseDownPTZControl(2);"
+                                                style="width: 30px;">
+                                            下
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="normalbtn"
+                                                onClick="mouseDownPTZControl(8);" style="width: 30px;">
+                                            右下
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <button class="normalbtn" onClick="mouseUpPTZControl();"
+                                    style="width: 30px; background-color: #C00">
+                                停止
+                            </button>
+                        </td>
+                        <td>
+                            <table width="120" height="90" border="0" cellspacing="0"
+                                   cellpadding="0">
+                                <tr align="center">
+                                    <td>
+                                        <button class="normalbtn" onClick="PTZZoomIn();"
+                                                style="width: 30px;">
+                                            +
+                                        </button>
+                                    </td>
+                                    <td>
+                                        焦距
+                                    </td>
+                                    <td>
+                                        <button class="normalbtn" onClick="PTZZoomout()"
+                                                style="width: 30px;">
+                                            -
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr align="center">
+                                    <td>
+                                        <button class="normalbtn" onClick="PTZFocusIn()"
+                                                style="width: 30px;">
+                                            +
+                                        </button>
+                                    </td>
+                                    <td>
+                                        焦点
+                                    </td>
+                                    <td>
+                                        <button class="normalbtn" onClick="PTZFoucusOut()"
+                                                style="width: 30px;">
+                                            -
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr align="center">
+                                    <td>
+                                        <button class="normalbtn" onClick="PTZIrisIn()"
+                                                style="width: 30px;">
+                                            +
+                                        </button>
+                                    </td>
+                                    <td>
+                                        光圈
+                                    </td>
+                                    <td>
+                                        <button class="normalbtn" onClick="PTZIrisOut()"
+                                                style="width: 30px;">
+                                            -
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+
+        </ul>
+    </div>
+</div>-->
+<div id="OCXBody" style="border-style:none;width:70%;margin:0px;overflow:hidden">
+    <div id="divPlugin" class="plugin"></div>
+    <!--<div style="display: none">
+        <input type="text" id="ip" th:value="${item.ip}">
+        <input type="text" id="maliu" th:value="${item.maliu}">
+        <input type="text" id="httpport" th:value="${item.httpport}">
+        <input type="text" id="username"th:value="${item.username}">
+        <input type="text" id="password" th:value="${item.password}">
+        <input type="text" id="datasignal" th:value="${item.datasignal}">
+        <input type="text" id="channel" th:value="${item.channel}">
+    </div>-->
+</div>
+
+<div data-options="region:'east'" style="border-style:none;width:30%;margin:0px;overflow:hidden">
+    <div style="float:left;width:100%;height:150px; line-height:18px;color:rgb(71,100,158);background:url('/graindepot-video/images/video_message.png') no-repeat center;background-size:190px 100%" align="center">
+        <div style="width:100%;text-align:center;padding-top:2px"><b>视频信息</b></div>
+        <div style="width:100%;text-align:center;">视频位置：<span id="videoname" th:text="${item.videoname}"></span></div>
+        <div style="width:100%;">
+            <span id="msg" style="color:red"></span>
+            <br>
+            <a class="red" href="javascript:rePlay()" title="播放刷新"><i class="icon-facetime-video bigger-160"></i></a>
+        </div>
+        <!--<div style="width:100%;">
+          <button class="normalbtn" onClick="ButtonPress('CatPic:bmp')" style="background:#DCDCDC;width:65px; height:18px;font-size:12px;">抓BMP图</button>
+          <button class="normalbtn" onClick="ButtonPress('CatPic:jpeg')" style="background:#DCDCDC; width:65px;height:18px;font-size:12px;margin-left:0px;">抓JPEG图</button>
+        </div>
+        <div style="width:100%;">
+          <button class="normalbtn" onClick="ButtonPress('Record:start')" style="background:#DCDCDC;width:65px; height:18px; font-size:12px;">开始报备</button>
+          <button class="normalbtn" onClick="ButtonPress('Record:stop')" style="background:#DCDCDC;width:65px; height:18px;font-size:12px; margin-left:0px;">停止报备</button>
+        </div>
+        <div style="width:100%;padding-top:2px">
+            开始<input  class="Wdate" style="width:105px;height:15px;font-size:9px" name="begin" id="begin" type="text" value=""   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+        </div>
+        <div style="width:100%;padding-top:2px">
+                结束<input  class="Wdate" style="width:105px;height:15px;font-size:9px" name="end" id="end" type="text" value=""   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+        </div>
+        <div style="width:100%;padding-top:2px;text-align:center">
+          <button class="normalbtn" onClick="clickStartPlayback()" style="background:#DCDCDC;width:70px; height:18px; font-size:12px;">主动抽查</button>
+         </div>-->
+    </div>
+    <div>
+        <center>
+            <a href="/graindepot-video/file/WebComponents.exe" style="color: blue;">点击下载视频播放控件</a><br><br>
+        </center>
+    </div>
+    <div style="align:center;width:100%;height:147px; color:rgb(71,100,158);background:url('/graindepot-video/images/video_kz.png') no-repeat center; ">
+        <div style="width:127px;height:147px;position: relative;margin:0 auto;">
+            <div style="width:42px; height:31px; background:url('/graindepot-video/images/tm.png'); z-index: 120; position: absolute;top:37px;left:8px;cursor:pointer;" onMouseDown="mouseDownPTZControl(3)" onMouseUp="mouseUpPTZControl()"></div>
+            <div style="width:42px; height:31px; background:url('/graindepot-video/images/tm.png');z-index: 120;  position: absolute;top:37px;left:75px;cursor:pointer;" onMouseDown="mouseDownPTZControl(4)" onMouseUp="mouseUpPTZControl()"></div>
+            <div style="width:31px; height:42px; background:url('/graindepot-video/images/tm.png');z-index: 120;  position: absolute;top:0px;left:49px;cursor:pointer;" onMouseDown="mouseDownPTZControl(1)" onMouseUp="mouseUpPTZControl()"></div>
+            <div style="width:31px; height:42px; background:url('/graindepot-video/images/tm.png');z-index: 120;  position: absolute;top:65px;left:49px;cursor:pointer;" onMouseDown="mouseDownPTZControl(2)" onMouseUp="mouseUpPTZControl()"></div>
+            <div style="width:38px; height:28px; background:url('/graindepot-video/images/tm.png');z-index: 120;  position: absolute;top:117px;left:3px;cursor:pointer;" onMouseDown="mouseDownPTZControl(11)" onMouseUp="mouseUpPTZControl()"></div>
+            <div style="width:38px; height:28px; background:url('/graindepot-video/images/tm.png');z-index: 120;  position: absolute;top:117px;left:46px;cursor:pointer;" onMouseDown="mouseDownPTZControl(9)" onMouseUp="mouseUpPTZControl()"></div>
+            <div style="width:38px; height:28px; background:url('/graindepot-video/images/tm.png');z-index: 120;  position: absolute;top:117px;left:88px;cursor:pointer;" onMouseDown="mouseDownPTZControl(10)" onMouseUp="mouseUpPTZControl()"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

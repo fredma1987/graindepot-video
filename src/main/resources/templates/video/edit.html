@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="head::head(${title})">
+</head>
+
+
+<link th:href="@{/assets/css/select/bootstrap-select.min.css}" rel="stylesheet" media="screen">
+<script th:src="@{/assets/js/select/bootstrap-select.js}"></script>
+<script th:src="@{/assets/js/select/defaults-zh_CN.js}"></script>
+<link th:href="@{/assets/js/uploadify/uploadify.css}" rel="stylesheet" type="text/css">
+<script th:src="@{/assets/js/uploadify/jquery.uploadify.js}"></script>
+
+
+<body style="overflow-x: hidden">
+<script th:src="@{/graindepot-video/js/video.js}"></script>
+<form role="form" id="validation-form" method="get" style="width:100%">
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="groupid">
+            集团:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="groupid" name="groupid" class="form-control" style="height:34px"
+                    th:value="${item.groupid}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="companyid">
+            企业:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="companyid" name="companyid" class="form-control" style="height:34px"
+                    th:value="${item.companyid}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="graindepotid">
+            粮库:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="graindepotid" name="graindepotid" class="form-control" style="height:34px"
+                    th:value="${item.graindepotid}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="storageid">
+            仓房:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="storageid" name="storageid" class="form-control" style="height:34px"
+                    th:value="${item.storageid}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="videoname">
+            <span class="red">*</span>监控名称:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="videoname" id="videoname" class="form-control"
+                   data-bv-notempty th:value="${item.videoname}"
+                   placeholder="监控名称"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="ip">
+            IP地址:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="ip" id="ip" class="form-control"
+                   th:value="${item.ip}"
+                   placeholder="IP地址"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="serviceport">
+            服务端口:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="serviceport" id="serviceport" class="form-control"
+                   th:value="${item.serviceport}"
+                   placeholder="服务端口"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="httpport">
+            http端口:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="httpport" id="httpport" class="form-control"
+                   th:value="${item.httpport}"
+                   placeholder=""/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="rtspport">
+            rtsp端口:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="rtspport" id="rtspport" class="form-control"
+                   th:value="${item.rtspport}"
+                   placeholder="rtsp端口"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="username">
+            用户名:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="username" id="username" class="form-control"
+                   th:value="${item.username}"
+                   placeholder="用户名"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="password">
+            密码:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="password" id="password" class="form-control"
+                   th:value="${item.password}"
+                   placeholder="密码"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="channel">
+            通道号:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="channel" id="channel" class="form-control"
+                   th:value="${item.channel}"
+                   placeholder="通道号"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="place">
+            视频位置:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="place" name="place" class="form-control" style="height:34px"
+                    th:value="${item.place}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="position_x">
+            视频点位X值:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="position_x" id="position_x" class="form-control"
+                   th:value="${item.position_x}"
+                   placeholder="视频点位X值"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="position_y">
+            视频点位Y值:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="position_y" id="position_y" class="form-control"
+                   th:value="${item.position_y}"
+                   placeholder="视频点位Y值"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="videotype">
+            摄像头类型:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="videotype" name="videotype" class="form-control" style="height:34px"
+                    th:value="${item.videotype}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="connecttype">
+            连接方式:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="connecttype" name="connecttype" class="form-control" style="height:34px"
+                    th:value="${item.connecttype}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="datasignal">
+            摄像头分类:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="datasignal" name="datasignal" class="form-control" style="height:34px"
+                    th:value="${item.datasignal}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="isonline">
+            是否在线:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="isonline" name="isonline" class="form-control" style="height:34px"
+                    th:value="${item.isonline}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="facid">
+            视频厂家:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="facid" name="facid" class="form-control" style="height:34px"
+                    th:value="${item.facid}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="isshouchu">
+            是否实时收储监控:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="isshouchu" name="isshouchu" class="form-control" style="height:34px"
+                    th:value="${item.isshouchu}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="isshibie">
+            是否车牌识别监控:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="isshibie" name="isshibie" class="form-control" style="height:34px"
+                    th:value="${item.isshibie}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="sequno">
+            车牌识别排序:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="sequno" id="sequno" class="form-control"
+                   th:value="${item.sequno}"
+                   placeholder="车牌识别排序"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="oxcver">
+            ocx控件版本:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="oxcver" name="oxcver" class="form-control" style="height:34px"
+                    th:value="${item.oxcver}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="maliu">
+            码流:
+        </label>
+
+        <div class="col-sm-2">
+            <select id="maliu" name="maliu" class="form-control" style="height:34px"
+                    th:value="${item.maliu}">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right" for="uuid">
+            视频UUID:
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" name="uuid" id="uuid" class="form-control"
+                   th:value="${item.uuid}"
+                   placeholder="视频UUID"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12 center" style="margin-top:15px">
+            <button class="btn btn-info" type="button" onclick="toSave()">
+                <i class="icon-ok bigger-110"></i>
+                保存
+            </button>
+            &nbsp; &nbsp; &nbsp;
+            <button class="btn" type="button" onclick="toBack()">
+                <i class="icon-arrow-left bigger-110"></i>
+                返回
+            </button>
+        </div>
+    </div>
+
+</form>
+
+</body>
+</html>
+<script th:inline="javascript">
+    var param;
+    var g_videoid = [[${id}]];
+    var g_item = [[${item}]];
+    $(function () {
+        //初始化form验证
+        $('#validation-form').bootstrapValidator();
+        //初始化日期时间框
+        //$(".form_datetime").bootstrapDatetime();
+        $(".form_date").bootstrapDate();
+        //初始化下拉框
+        comm_initGroup(param);
+        $("#groupid").bootstrapSelect("setValue", g_item.groupid);
+        comm_initCompany(param);
+        $("#companyid").bootstrapSelect("setValue", g_item.companyid);
+        comm_initGraindepot(param);
+        $("#graindepotid").bootstrapSelect("setValue", g_item.graindepotid);
+        comm_initStorage(param);
+        $("#storageid").bootstrapSelect("setValue", g_item.storageid);
+        //1.初始化视频位置
+        initPlace();
+        //2.初始化码流
+        initMaliu();
+        //初始化摄像机类型
+        initVideotype();
+        //初始化连接方式
+        initConnecttype();
+        //初始化摄像头分类
+        initDatasignal();
+        //初始化是否在线
+        initIsonline();
+        //初始化视频厂家
+        initFacid();
+        //初始化是否收储监控
+        initIsshouchu();
+        //初始化是否车牌识别
+        initIsshibie();
+        //初始化ocx控件版本
+        initOxcver();
+        //3.省
+        //initProvince();
+        //初始化上传头像按钮
+
+    });
+</script>

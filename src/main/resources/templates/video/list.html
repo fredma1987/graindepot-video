@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="head::head(${title})">
+</head>
+<link th:href="@{/assets/css/select/bootstrap-select.min.css}" rel="stylesheet" media="screen">
+<script th:src="@{/assets/js/select/bootstrap-select.js}"></script>
+<script th:src="@{/assets/js/select/defaults-zh_CN.js}"></script>
+<body>
+<div th:replace="navbar::navbar"></div>
+<div class="main-container" id="main-container">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="icon-home home-icon"></i>
+                首页
+            </li>
+            <li>
+                <i class="icon-table home-icon"></i>
+                监控列表
+            </li>
+        </ul>
+    </div>
+    <div  style="margin-top: 4px;margin-bottom: 4px">
+        <div class="col-sm-4">
+            <button class="btn btn-sm btn-primary" onclick="toAdd()">
+                <i class="icon-plus align-top bigger-125"></i>
+                添加监控
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="doDel()">
+                <i class="icon-trash align-top bigger-125"></i>
+                删除监控
+            </button>
+        </div>
+        <div class="col-sm-10">
+
+            <div class="col-sm-2">
+                <div class="input-group">
+                    <span class="input-group-addon">监控名:</span>
+                    <input id="videoname" type="text" class="form-control" placeholder="监控名">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-sm btn-success" onclick="searchTable()">
+                    <i class="icon-search align-top bigger-125"></i>
+                    查询
+                </button>
+                <button class="btn btn-sm btn-warning" onclick="rest()">
+                    <i class="icon-undo align-top bigger-125"></i>
+                    重置
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="table-responsive" style="width:100%">
+
+        <table id="myTable" style="width:100%" class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th class="center" style="width: 20px"></th>
+                <th class="center" style="width: 20px">
+                    <label>
+                        <input id="CK" type="checkbox" class="ace"/>
+                        <span class="lbl"></span>
+                    </label>
+                </th>
+                <th style="width: 100px">粮库</th>
+                <th style="width: 100px">监控名</th>
+                <th style="width: 100px">监控IP</th>
+                <th style="width: 100px">服务端口</th>
+                <th style="width: 100px">http端口</th>
+                <th style="width: 100px">rtsp端口</th>
+                <th style="width: 100px">通道号</th>
+                <th style="width: 100px">收储监控</th>
+                <th style="width: 100px">车牌识别</th>
+                <th style="width: 100px">车牌识别排序</th>
+                <th style="width: 100px">视频厂家</th>
+                <th style="width: 100px">操作</th>
+            </tr>
+            </thead>
+        </table>
+
+    </div>
+
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="icon-double-angle-up icon-only bigger-110"></i>
+    </a>
+</div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+    var theTable;
+    function selectOnchang(o) {
+        //获取全部打钩的check的值
+        //$('#myTable th input:checkbox:checked')
+        console.log($('#myTable').bootstrapTable("getChecked"))
+    }
+    $(document).ready(function () {
+        query();
+    });
+
+
+    function query(param) {
+        theTable = $('#myTable').bootstrapTable({
+            //数据来源（包括处理分页，排序，过滤） ，即url，action，接口，等等
+            ajax: {
+                url: "/graindepot-video/video/list/page",
+                data: param,
+                type: "GET"
+            },
+            columns: [
+                {data: "graindepotname"},
+                {data: "videoname"},
+                {data: "ip"},
+                {data: "serviceport"},
+                {data: "httpport"},
+                {data: "rtspport"},
+                {data: "channel"},
+                {
+                    title: "收储监控",
+                    data: "isshouchu",
+                    render: function (data, type, row) {
+                        if (data + "" == "1") {
+                            return "是";
+                        } else {
+                            return "否";
+                        }
+
+                    }
+                },
+                {
+                    title: "车牌识别",
+                    data: "isshibie",
+                    render: function (data, type, row) {
+                        if (data + "" == "1") {
+                            return "是";
+                        } else {
+                            return "否";
+                        }
+
+                    }
+                },
+                {
+                    title: "车牌识别排序",
+                    data: "sequno",
+                    render: function (data, type, row) {
+                        if (data + "" == "1") {
+                            return "是";
+                        } else {
+                            return "否";
+                        }
+
+                    }
+                },
+                {
+                    title: "视频厂家",
+                    data: "facid",
+                    render: function (data, type, row) {
+                        if (data + "" == "1") {
+                            return "海康";
+                        } else if(data + "" == "2"){
+                            return "大华";
+                        }else{
+                            return "其他";
+                        }
+
+                    }
+                },
+                {
+                    data: "videoid",
+                    render: function (data, type, row) {
+                        return '<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">' +
+                                '<a class="green" href="javascript:toEdit(' + data + ')"' +
+                                ' title="编辑" ' +
+                                '>' +
+                                '<i class="icon-pencil bigger-130"></i>' +
+                                '</a>' +
+                                '<a class="blue" href="javascript:toDetail(' + data + ')"' +
+                                'title="详情"' +
+                                '>' +
+                                '<i class="icon-eye-open bigger-130"></i>' +
+                                '</a>' +
+                                '<a class="red" href="javascript:toPlay(' + data + ')"' +
+                                'title="播放"' +
+                                '>' +
+                                '<i class="icon-facetime-video bigger-130"></i>' +
+                                '</a>' +
+                                '</div>';
+
+                    }
+                }
+            ]
+        });
+    }
+
+    function searchTable() {
+        theTable.destroy();
+        query(getParam());
+    }
+    function getParam() {
+        var param = {};
+        param.videoname = $("#videoname").val();
+        return param;
+    }
+
+    function rest() {
+        $("input").val("");
+        $("select").val("");
+        //触发change事件
+        $("select").trigger("change");
+        searchTable();
+        //$("#city").find("option[value = '"+"']").attr("selected","selected");//jq改变select的选中值
+
+    }
+
+
+    function doDel() {
+        if(theTable==undefined){
+            $.bootstrapBox.alert.init({message: "请选择需要删除的行"});
+            return
+        }
+        var checkedList = $('#myTable').bootstrapTable("getChecked");
+        if (checkedList.length==0) {
+            $.bootstrapBox.alert.init({message: "请选择需要删除的行"});
+            return
+        }
+        $.bootstrapBox.confirm.init({
+            message: "确认删除？",
+            callback: function (result) {
+                if (result) {
+                    //删除监控
+                    var ids = checkedList.map(function (curr) {
+                        return curr.videoid
+                    });
+                    $.post("/graindepot-video/video/del", {ids:ids.join(",")}, function (result) {
+                        $.bootstrapBox.alert.init({
+                            message: result.message
+                        });
+                        $("#myTable").bootstrapTable("reload");
+                    })
+
+                }
+
+            }
+        });
+
+    }
+
+    function toAdd() {
+        $.bootstrapBox.dialog.init({
+            title: "新增监控",
+            url: "/graindepot-video/page/video/edit",
+            width: '1200px',
+            height: '550px'
+        })
+    }
+
+    function toEdit(videoid) {
+        $.bootstrapBox.dialog.init({
+            title: "修改监控",
+            url: "/graindepot-video/page/video/edit?id=" + videoid,
+            width: '1200px',
+            height: '550px'
+        })
+    }
+
+
+    function toDetail(videoid) {
+        $.bootstrapBox.dialog.init({
+            title: "监控详情",
+            url: "/graindepot-video/page/video/detail/" + videoid,
+            width: '1200px',
+            height: '550px'
+        })
+    }
+    function toPlay(videoid) {
+        $.bootstrapBox.dialog.init({
+            title: "监控播放",
+            url: "/graindepot-video/page/video/play/" + videoid,
+            width: '800px',
+            height: '500px'
+        })
+    }
+
+
+    function toSave(result) {
+        $.bootstrapBox.dialog.close();
+        $.bootstrapBox.alert.init({
+            message: result.message
+        });
+        $("#myTable").bootstrapTable("reload")
+    }
+
+</script>
