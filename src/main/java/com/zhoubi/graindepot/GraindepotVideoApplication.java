@@ -11,7 +11,7 @@ import org.springframework.session.data.redis.RedisFlushMode;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @SpringBootApplication
-@EnableEurekaClient
+@EnableDiscoveryClient
 @EnableFeignClients
 @MapperScan(value = "com.zhoubi.graindepot.mapper")
 @EnableRedisHttpSession(redisFlushMode = RedisFlushMode.IMMEDIATE)
