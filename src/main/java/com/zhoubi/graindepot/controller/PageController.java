@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PageController extends BaseController {
     @Autowired
     private VideoBiz videoBiz;
-    @GetMapping("/video/list")
+    @GetMapping("/video")
     public String toList(Model model){
         String title="监控列表";
         model.addAttribute("title",title);
