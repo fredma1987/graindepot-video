@@ -3,5 +3,5 @@ spring:
         name: graindepot-video
 
 server:
-    port: 8006 #
+    port: 8806 #
     #context-path: /graindepot-video
