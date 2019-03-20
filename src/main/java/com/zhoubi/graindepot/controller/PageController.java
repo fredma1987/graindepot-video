@@ -21,7 +21,7 @@ public class PageController extends BaseController {
     public String toList(Model model){
         String title="监控列表";
         model.addAttribute("title",title);
-        String path="/video/list";
+        String path="video/list";
         return path;
     }
     @GetMapping("/video/edit")
@@ -34,7 +34,7 @@ public class PageController extends BaseController {
         model.addAttribute("title",title);
         model.addAttribute("item",item);
         model.addAttribute("id",id);
-        String path="/video/edit";
+        String path="video/edit";
         return path;
     }
     @GetMapping("/video/play/{id}")
@@ -48,21 +48,21 @@ public class PageController extends BaseController {
         }
         String path="/video/play_hik";
         if(item.getFacid()==1){
-            path="/video/play_hik";
+            path="video/play_hik";
         }else if(item.getFacid()==2){
-            path="/video/play_dh";
+            path="video/play_dh";
         }else{
-            path="/video/play_ot";
+            path="video/play_ot";
         }
         return path;
     }
-    @GetMapping("/video/detail/{id}")
+    @GetMapping("video/detail/{id}")
     public String toDetail(Model model,@PathVariable int id){
         String title="监控详情";
         Video item=videoBiz.selectById(id);
         model.addAttribute("title",title);
         model.addAttribute("item",item);
-        String path="/video/detail";
+        String path="video/detail";
         return path;
     }
 
